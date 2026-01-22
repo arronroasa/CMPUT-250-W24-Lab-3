@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
 
 public class DVDLogo : MonoBehaviour
@@ -12,6 +13,11 @@ public class DVDLogo : MonoBehaviour
 
     //Current direction
     private Vector3 direction;
+    private SpriteRenderer spriteRenderer;
+
+    // Colour variables
+    float timeLeft;
+    UnityEngine.Color targetColour;
 
     // Start is called before the first frame update
     void Start()
@@ -19,6 +25,8 @@ public class DVDLogo : MonoBehaviour
         //Randomly initialize direction
         direction = new Vector3(Random.Range(-1f,1f), Random.Range(-1f,1f));
         direction.Normalize();
+
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>(); // Get sprite renderer component
 
     }
 
@@ -60,5 +68,17 @@ public class DVDLogo : MonoBehaviour
         }
 
         transform.position += direction*Time.deltaTime*speed;
+
+        if (timeLeft <= Time.deltaTime)
+        {
+            spriteRenderer.color = targetColour;
+
+            targetColour = new UnityEngine.Color(Random.value, Random.value, Random.value);
+            timeLeft = 1f;
+        } else
+        {
+            spriteRenderer.color = UnityEngine.Color.Lerp(spriteRenderer.color, targetColour, Time.deltaTime / timeLeft);
+            timeLeft -= Time.deltaTime;
+        }
     }
 }
